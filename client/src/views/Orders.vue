@@ -74,6 +74,59 @@
           </table>
         </div>
       </div>
+
+      <!--
+        Restock orders submitted from the Restocking tab. The global filters
+        (period / warehouse / category / status) intentionally do not apply here:
+        restock orders are not tied to those dimensions.
+      -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submittedOrders') }} ({{ restockOrders.length }})</h3>
+        </div>
+        <div v-if="restockError" class="restock-message">{{ restockError }}</div>
+        <div v-else-if="restockOrders.length === 0" class="restock-message">{{ t('orders.noSubmittedOrders') }}</div>
+        <div v-else class="table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th class="col-order-number">{{ t('orders.table.orderId') }}</th>
+                <th class="col-date">{{ t('orders.table.date') }}</th>
+                <th class="col-items">{{ t('orders.table.items') }}</th>
+                <th class="col-value">{{ t('orders.table.value') }}</th>
+                <th class="col-date">{{ t('orders.leadTime') }}</th>
+                <th class="col-date">{{ t('orders.expectedDelivery') }}</th>
+                <th class="col-status">{{ t('orders.table.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in restockOrders" :key="order.id">
+                <td class="col-order-number"><strong>{{ order.id }}</strong></td>
+                <td class="col-date">{{ formatDate(order.submitted_at) }}</td>
+                <td class="col-items">
+                  <details class="items-details">
+                    <summary class="items-summary">
+                      {{ t('orders.itemsCount', { count: order.items.length }) }}
+                    </summary>
+                    <div class="items-dropdown">
+                      <div v-for="item in order.items" :key="item.sku" class="item-entry">
+                        <span class="item-name">{{ item.sku }} - {{ translateProductName(item.name) }}</span>
+                        <span class="item-meta">{{ t('orders.quantity') }}: {{ item.quantity }} @ {{ formatMoney(item.unit_cost, 2) }}</span>
+                      </div>
+                    </div>
+                  </details>
+                </td>
+                <td class="col-value"><strong>{{ formatMoney(order.total_cost, 2) }}</strong></td>
+                <td class="col-date">{{ t('orders.leadTimeDays', { count: order.lead_time_days }) }}</td>
+                <td class="col-date">{{ formatDateOnly(order.expected_delivery, currentLocale) }}</td>
+                <td class="col-status">
+                  <span class="badge info">{{ translateRestockStatus(order.status) }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -83,11 +136,13 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
+import { formatCurrencyWithDecimals } from '../utils/currency'
+import { formatDateOnly } from '../utils/dateFormat'
 
 export default {
   name: 'Orders',
   setup() {
-    const { t, currentCurrency, translateProductName, translateCustomerName } = useI18n()
+    const { t, currentLocale, currentCurrency, translateProductName, translateCustomerName } = useI18n()
 
     const currencySymbol = computed(() => {
       return currentCurrency.value === 'JPY' ? '¥' : '$'
@@ -95,6 +150,8 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockOrders = ref([])
+    const restockError = ref(null)
 
     // Use shared filters
     const {
@@ -153,7 +210,32 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    // Loaded independently of loadOrders: a failure here must not break the main orders table
+    const loadRestockOrders = async () => {
+      try {
+        restockError.value = null
+        restockOrders.value = await api.getRestockOrders()
+      } catch (err) {
+        console.error('Failed to load restock orders:', err)
+        restockError.value = t('orders.submittedLoadFailed')
+      }
+    }
+
+    const formatMoney = (amount, decimals = 0) => {
+      return formatCurrencyWithDecimals(amount, currentCurrency.value, decimals)
+    }
+
+    // Server status is always "Submitted" today; fall back to the raw value for unknown statuses
+    const translateRestockStatus = (status) => {
+      const key = `status.${String(status).toLowerCase()}`
+      const translated = t(key)
+      return translated === key ? status : translated
+    }
+
+    onMounted(() => {
+      loadOrders()
+      loadRestockOrders()
+    })
 
     return {
       t,
@@ -164,6 +246,12 @@ export default {
       getOrderStatusClass,
       formatDate,
       currencySymbol,
+      currentLocale,
+      restockOrders,
+      restockError,
+      formatMoney,
+      formatDateOnly,
+      translateRestockStatus,
       translateProductName,
       translateCustomerName
     }
@@ -201,6 +289,13 @@ export default {
 
 .col-value {
   width: 120px;
+}
+
+.restock-message {
+  padding: 1.5rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.938rem;
 }
 
 /* Items details styling */

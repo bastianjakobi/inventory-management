@@ -6,6 +6,7 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充発注',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -112,6 +113,12 @@ export default {
     onTimeDelivery: '定時配達',
     itemsCount: '{count}件',
     quantity: '数量',
+    submittedOrders: '発注済みの補充注文',
+    leadTime: 'リードタイム',
+    expectedDelivery: '納品予定日',
+    noSubmittedOrders: '補充注文はまだ送信されていません。',
+    submittedLoadFailed: '発注済みの注文を読み込めませんでした。',
+    leadTimeDays: '{count}日',
     table: {
       orderNumber: '注文番号',
       orderId: '注文ID',
@@ -127,6 +134,45 @@ export default {
       expectedDelivery: '予定配達日',
       actualDelivery: '実際の配達日'
     }
+  },
+
+  // 補充発注
+  restocking: {
+    title: '補充発注',
+    description: '予算を選択すると、需要予測に基づく優先順位付きの補充推奨が表示されます',
+    budget: '予算',
+    budgetControl: '補充予算',
+    selectedTotal: '選択合計',
+    remaining: '残り予算',
+    fullShortfallCost: '不足分の総コスト',
+    recommendedItems: '推奨品目',
+    selectedCount: '{total}件中{selected}件を選択',
+    table: {
+      select: '選択',
+      item: '品目',
+      category: 'カテゴリ',
+      stock: '在庫 / 予測',
+      shortfall: '不足数',
+      quantity: '発注数量',
+      unitCost: '単価',
+      lineCost: '小計',
+      leadTime: 'リードタイム'
+    },
+    partial: '一部',
+    partialTitle: '予算では不足分の一部のみ補充できます',
+    days: '{count}日',
+    placeOrder: '発注する',
+    placing: '発注中...',
+    orderPlaced: '発注が完了しました',
+    orderId: '発注ID',
+    orderTotal: '合計',
+    leadTime: 'リードタイム',
+    expectedDelivery: '納品予定日',
+    viewOrders: '発注履歴を見る',
+    orderFailed: '発注に失敗しました',
+    loadFailed: '推奨の読み込みに失敗しました',
+    emptyBudget: 'この予算で購入できる品目はありません。予算を増やしてください。',
+    emptyNothingNeeded: '補充の必要はありません。現在の在庫で予測需要を満たしています。'
   },
 
   // Finance/Spending
@@ -204,6 +250,7 @@ export default {
     shipped: '出荷済み',
     processing: '処理中',
     backordered: 'バックオーダー',
+    submitted: '発注済み',
     inStock: '在庫あり',
     lowStock: '在庫僅少',
     adequate: '適量'

@@ -35,5 +35,14 @@ recent_transactions = load_json_file('transactions.json')
 # Load purchase orders
 purchase_orders = load_json_file('purchase_orders.json')
 
+# Restocking catalog: unit cost, stock and category for demand-forecast SKUs that
+# are missing from inventory.json (only PSU-501 overlaps), plus per-category lead times.
+# Kept separate so Inventory/Dashboard totals are unaffected by the Restocking feature.
+restock_catalog = load_json_file('restock_catalog.json')
+
+# Submitted restock orders. In-memory only: appended to by POST /api/restocking/orders
+# and reset on server restart (matches the project's no-database design).
+restock_orders = []
+
 # All data is now loaded from JSON files in the data/ directory
 # This allows for easier maintenance and updates of the sample data
