@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -112,6 +113,12 @@ export default {
     onTimeDelivery: 'On-Time Delivery',
     itemsCount: '{count} items',
     quantity: 'Qty',
+    submittedOrders: 'Submitted Orders',
+    leadTime: 'Lead Time',
+    expectedDelivery: 'Expected Delivery',
+    noSubmittedOrders: 'No restock orders have been submitted yet.',
+    submittedLoadFailed: 'Could not load submitted orders.',
+    leadTimeDays: '{count} days',
     table: {
       orderNumber: 'Order Number',
       orderId: 'Order ID',
@@ -127,6 +134,45 @@ export default {
       expectedDelivery: 'Expected Delivery',
       actualDelivery: 'Actual Delivery'
     }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Choose a budget to get prioritized restock recommendations based on forecasted demand',
+    budget: 'Budget',
+    budgetControl: 'Restocking Budget',
+    selectedTotal: 'Selected Total',
+    remaining: 'Remaining',
+    fullShortfallCost: 'Full Shortfall Cost',
+    recommendedItems: 'Recommended Items',
+    selectedCount: '{selected} of {total} selected',
+    table: {
+      select: 'Select',
+      item: 'Item',
+      category: 'Category',
+      stock: 'Stock / Forecast',
+      shortfall: 'Shortfall',
+      quantity: 'Order Qty',
+      unitCost: 'Unit Cost',
+      lineCost: 'Line Cost',
+      leadTime: 'Lead Time'
+    },
+    partial: 'Partial',
+    partialTitle: 'Budget only covers part of the shortfall',
+    days: '{count} days',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    orderPlaced: 'Order placed',
+    orderId: 'Order ID',
+    orderTotal: 'Total',
+    leadTime: 'Lead Time',
+    expectedDelivery: 'Expected Delivery',
+    viewOrders: 'View submitted orders',
+    orderFailed: 'Failed to place order',
+    loadFailed: 'Failed to load recommendations',
+    emptyBudget: 'No items fit within this budget. Increase the budget to see recommendations.',
+    emptyNothingNeeded: 'Nothing needs restocking. Current stock covers forecasted demand.'
   },
 
   // Finance/Spending
@@ -204,6 +250,7 @@ export default {
     shipped: 'Shipped',
     processing: 'Processing',
     backordered: 'Backordered',
+    submitted: 'Submitted',
     inStock: 'In Stock',
     lowStock: 'Low Stock',
     adequate: 'Adequate'
